@@ -19,7 +19,7 @@ cConstant = complex(.09,.62)
 #rand = Random.seed()
 PRESCALE = 800
 midA = 0
-midB = 1
+midB = 0
 #midX = 0
 #midY = 0
 change = 300
@@ -57,6 +57,7 @@ def juliaSet(c):
     while(abs(z) <= 2 and step < MAX_INT):
         #print(step)
         z = pow(z*z*z,1/2) + cConstant
+        #z = z**(3/2) + cConstant
         step += 1
     return step
 
@@ -101,6 +102,6 @@ for x in range(0, WIDTH-1, 1):
 
 
 img.show()
-fileN = 'zoommingint' + str(cConstant)+ '_' + str(change)+'.png'
+#fileN = 'zoommingint' + str(cConstant)+ '_' + str(change)+'.png'
 #img.save(fileN)
 #img.close()

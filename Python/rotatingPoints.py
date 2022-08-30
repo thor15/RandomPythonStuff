@@ -2,20 +2,22 @@ from math import *
 from PIL import Image
 WIDTH = 800
 ARRAYLENG= WIDTH*WIDTH
-VALUE = [0]*(ARRAYLENG)
 SIDE1X = []
 SIDE1Y = []
 SIDE2X = []
 SIDE2Y = []
 TEST = []
 COUNTER = []
-
+VALUE = [0]*ARRAYLENG
+IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
 
 def points(x, y):
+    global VALUE
     VALUE[(399+round(x))*WIDTH+399+round(y)] = 40
     if(not ((399+round(x))*WIDTH+399+round(y)) in TEST):
         TEST.append((399+round(x))*WIDTH+399+round(y))
     COUNTER.append(0)
+    
 
 
 def lerp(low, high, t):
@@ -45,12 +47,12 @@ def drawSideVertical(ax, ay, bx, by, n):
     
 
 #starting points a:(-100, 50sqrt(3)), b: (100, 50sqrt(3)), c: (0,-50sqrt(3))
-def calculatePoints(angle, radius):
+def calculatePoints(angle, radius, sideLength):
 
     #calculate angles
     rAngle = angle*pi/180
-    shiftB = acos(100/radius)
-    shiftA = asin(-100/radius)
+    shiftB = acos(sideLength/(2*radius))
+    shiftA = asin(-sideLength/(2*radius))
     # print(rAngle, shiftB, shiftA)
     # print(cos(2*pi+rAngle-shiftA-pi/2))
 
@@ -67,8 +69,44 @@ def calculatePoints(angle, radius):
     drawSideVertical(ax, ay, cx, cy, 0)
     drawSideVertical(bx, by, cx, cy, 1)
 
-radius = sqrt(pow(100,2)+pow(50*sqrt(3), 2))
 
+
+
+def triangle(angle, radius, sideLength):
+    global VALUE
+    global IMG
+    VALUE.clear()
+    VALUE = [0]*ARRAYLENG
+    #print(VALUE)
+    calculatePoints(angle, radius, sideLength)
+    for point in range(0, len(SIDE1X)-1, 1):
+        #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
+        drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
+    IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
+    numberBlue = 0
+    for x in range(0, WIDTH-1, 1):
+        for y in range(0, WIDTH, 1):
+            count = 0
+            if(not VALUE[(x-1)*WIDTH+y] == 0):
+                count = count + 1
+            if(not VALUE[(x+1)*WIDTH+y] == 0):
+                count = count + 1
+            if(not VALUE[(x)*WIDTH+y-1] == 0):
+                count = count + 1
+            if(not VALUE[(x)*WIDTH+y+1] == 0):
+                count = count + 1
+            if(count > 3):
+                VALUE[x*WIDTH+y] = 40
+            if(VALUE[(x)*WIDTH+y+1] == 0):
+                numberBlue += 1
+            IMG.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))*255))
+    print(numberBlue)
+    IMG.show()
+    
+    return VALUE
+
+#print(VALUE)
+#triangle(20,20,23)
 # VALUE = [0]*(ARRAYLENG)
 # SIDE1X = []
 # SIDE1Y = []
@@ -85,68 +123,55 @@ radius = sqrt(pow(100,2)+pow(50*sqrt(3), 2))
 #     drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
 
 # print(len(COUNTER), len(TEST))
+#triangle(180, radius, 200)
 
-# img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
 
-# for x in range(0, WIDTH-1, 1):
-#     for y in range(0, WIDTH, 1):
-#         count = 0
-#         if(not VALUE[(x-1)*WIDTH+y] == 0):
-#             count = count + 1
-#         if(not VALUE[(x+1)*WIDTH+y] == 0):
-#             count = count + 1
-#         if(not VALUE[(x)*WIDTH+y-1] == 0):
-#             count = count + 1
-#         if(not VALUE[(x)*WIDTH+y+1] == 0):
-#             count = count + 1
-#         if(count > 3):
-#             VALUE[x*WIDTH+y] = 40
-#         img.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))*255))
 
 
 # print(angle)
 # fileN = 'rotating' + str(angle) +  '.png'
 # img.save(fileN)
-#img.show()
 
 
+
+#radius = sqrt(pow(100,2)+pow(50*sqrt(3), 2))
 #for printing a cycle
-for angle in range(0, 360, 1):
+# for angle in range(0, 360, 1):
 
-    VALUE = [0]*(ARRAYLENG)
-    SIDE1X = []
-    SIDE1Y = []
-    SIDE2X = []
-    SIDE2Y = []
-
-
-    calculatePoints(angle, radius)
-
-    #print(len(SIDE1X), len(SIDE1Y), len(SIDE2X), len(SIDE2Y))
-
-    for point in range(0, len(SIDE1X)-1, 1):
-        #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
-        drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
+#     VALUE = [0]*(ARRAYLENG)
+#     SIDE1X = []
+#     SIDE1Y = []
+#     SIDE2X = []
+#     SIDE2Y = []
 
 
-    img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
+#     calculatePoints(angle, radius, 200, VALUE)
 
-    for x in range(0, WIDTH-1, 1):
-        for y in range(0, WIDTH, 1):
-            count = 0
-            if(not VALUE[(x-1)*WIDTH+y] == 0):
-                count = count + 1
-            if(not VALUE[(x+1)*WIDTH+y] == 0):
-                count = count + 1
-            if(not VALUE[(x)*WIDTH+y-1] == 0):
-                count = count + 1
-            if(not VALUE[(x)*WIDTH+y+1] == 0):
-                count = count + 1
-            if(count > 3):
-                VALUE[x*WIDTH+y] = 40
-            img.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))*255))
+#     #print(len(SIDE1X), len(SIDE1Y), len(SIDE2X), len(SIDE2Y))
+
+#     for point in range(0, len(SIDE1X)-1, 1):
+#         #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
+#         drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
 
 
-    print(angle)
-    fileN = 'rotating' + str(angle) +  '.png'
-    img.save(fileN)
+#     img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
+
+#     for x in range(0, WIDTH-1, 1):
+#         for y in range(0, WIDTH, 1):
+#             count = 0
+#             if(not VALUE[(x-1)*WIDTH+y] == 0):
+#                 count = count + 1
+#             if(not VALUE[(x+1)*WIDTH+y] == 0):
+#                 count = count + 1
+#             if(not VALUE[(x)*WIDTH+y-1] == 0):
+#                 count = count + 1
+#             if(not VALUE[(x)*WIDTH+y+1] == 0):
+#                 count = count + 1
+#             if(count > 3):
+#                 VALUE[x*WIDTH+y] = 40
+#             img.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))*255))
+
+
+#     print(angle)
+#     fileN = 'rotating' + str(angle) +  '.png'
+#     img.save(fileN)
