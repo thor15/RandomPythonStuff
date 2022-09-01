@@ -8,12 +8,12 @@ SIDE2X = []
 SIDE2Y = []
 TEST = []
 COUNTER = []
-VALUE = [0]*ARRAYLENG
+ARRAYOFVAL = [0]*ARRAYLENG
 IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
 
 def points(x, y):
-    global VALUE
-    VALUE[(399+round(x))*WIDTH+399+round(y)] = 40
+    global ARRAYOFVAL
+    ARRAYOFVAL[(399+round(x))*WIDTH+399+round(y)] = 40
     if(not ((399+round(x))*WIDTH+399+round(y)) in TEST):
         TEST.append((399+round(x))*WIDTH+399+round(y))
     COUNTER.append(0)
@@ -73,16 +73,16 @@ def calculatePoints(angle, radius, sideLength):
 
 
 def triangle(angle, radius, sideLength):
-    global VALUE
+    global ARRAYOFVAL
     global IMG
-    VALUE.clear()
-    VALUE[ARRAYLENG:] = [0]*ARRAYLENG
+    ARRAYOFVAL.clear()
+    ARRAYOFVAL[ARRAYLENG:] = [0]*ARRAYLENG
     #print(VALUE)
     calculatePoints(angle, radius, sideLength)
     for point in range(0, len(SIDE1X)-1, 1):
         #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
         drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
-    return VALUE
+    return ARRAYOFVAL
 
 #print(VALUE)
 #triangle(20,20,23)
