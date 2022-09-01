@@ -76,33 +76,12 @@ def triangle(angle, radius, sideLength):
     global VALUE
     global IMG
     VALUE.clear()
-    VALUE = [0]*ARRAYLENG
+    VALUE[ARRAYLENG:] = [0]*ARRAYLENG
     #print(VALUE)
     calculatePoints(angle, radius, sideLength)
     for point in range(0, len(SIDE1X)-1, 1):
         #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
         drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
-    IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
-    numberBlue = 0
-    for x in range(0, WIDTH-1, 1):
-        for y in range(0, WIDTH, 1):
-            count = 0
-            if(not VALUE[(x-1)*WIDTH+y] == 0):
-                count = count + 1
-            if(not VALUE[(x+1)*WIDTH+y] == 0):
-                count = count + 1
-            if(not VALUE[(x)*WIDTH+y-1] == 0):
-                count = count + 1
-            if(not VALUE[(x)*WIDTH+y+1] == 0):
-                count = count + 1
-            if(count > 3):
-                VALUE[x*WIDTH+y] = 40
-            if(VALUE[(x)*WIDTH+y+1] == 0):
-                numberBlue += 1
-            IMG.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))*255))
-    print(numberBlue)
-    IMG.show()
-    
     return VALUE
 
 #print(VALUE)
