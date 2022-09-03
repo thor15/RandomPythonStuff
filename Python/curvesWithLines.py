@@ -1,4 +1,3 @@
-from glob import glob
 from math import *
 from PIL import Image
 WIDTH = 800
@@ -7,15 +6,12 @@ SIDE1X = []
 SIDE1Y = []
 SIDE2X = []
 SIDE2Y = []
-ARRAYOFVAL = [0]*ARRAYLENG
-VALUE = [0]*ARRAYLENG
-IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
-COLOUR = 40
+PIXELVALUES = [0]*ARRAYLENG
 
 def points(x, y):
-    global ARRAYOFVAL
+    global PIXELVALUES
     global COLOUR
-    ARRAYOFVAL[(399+round(x))*WIDTH+399+round(y)] = COLOUR
+    PIXELVALUES[(399+round(x))*WIDTH+399+round(y)] = 40
     
 
 
@@ -47,9 +43,8 @@ def drawSideVertical(ax, ay, bx, by, n):
         else:
             SIDE2X.append(x)
             SIDE2Y.append(y)
-    
 
-#starting points a:(-100, 50sqrt(3)), b: (100, 50sqrt(3)), c: (0,-50sqrt(3))
+
 def calculatePoints(angle, radius, sideLength):
 
     #calculate angles
@@ -68,31 +63,21 @@ def calculatePoints(angle, radius, sideLength):
     cy = -1*radius*cos(rAngle)
 
     #draw side
-    drawSideHorizantal(ax, ay, bx, by)
     drawSideVertical(ax, ay, cx, cy, 0)
-    drawSideVertical(bx, by, cx, cy, 1)
+    drawSideVertical(cx, cy, bx, by, 1)
 
 
+sideLength = 600
+radius = sqrt(pow(sideLength/2, 2)+pow(sideLength/(4*sqrt(3)),2))
+calculatePoints(0, radius, sideLength)
+for point in range(0, len(SIDE1X)-1, 1):
+    drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
+
+img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
+
+for x in range(0, WIDTH-1, 1):
+    for y in range(0, WIDTH, 1):
+        img.putpixel([x,y], (abs(int(PIXELVALUES[x*WIDTH+y])),abs(int(PIXELVALUES[x*WIDTH+y])),abs(int(PIXELVALUES[x*WIDTH+y]))*255))
 
 
-def triangle(angle, radius, sideLength, color):
-    global ARRAYOFVAL
-    global IMG
-    global SIDE1X
-    global SIDE1Y
-    global SIDE2X
-    global SIDE2Y
-    global COLOUR
-    COLOUR = color
-    SIDE1X = []
-    SIDE1Y = []
-    SIDE2X = []
-    SIDE2Y = []
-    ARRAYOFVAL.clear()
-    ARRAYOFVAL[ARRAYLENG:] = [0]*ARRAYLENG
-    #print(VALUE)
-    calculatePoints(angle, radius, sideLength)
-    for point in range(0, len(SIDE1X)-1, 1):
-        #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
-        drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
-    return ARRAYOFVAL
+img.show()

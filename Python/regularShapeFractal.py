@@ -14,7 +14,7 @@ def splice(array):
 #for later
 def shift(centerPointX, centerPointY, array):
     changedIndices = []
-    for index in range(0, len(array), 1):
+    for index in range(len(array)-1, -1, -1):
         if(not array[index] == 0 and not index in changedIndices):
             indexNew = round(index-399*WIDTH+centerPointX*WIDTH-399+centerPointY)
             array[int(indexNew)] = array[index]
@@ -22,53 +22,45 @@ def shift(centerPointX, centerPointY, array):
             changedIndices.append(indexNew)
     return array
 
-#triangle(399, 399, 200, 45)
-
 # creates a triangle with given dimentions
 initialSideLength = 200
 initialApothem = initialSideLength/(2*math.sqrt(3))
 initialHeight = initialSideLength*math.sqrt(3)/2
-initialRadius = math.sqrt(pow(initialSideLength/2, 2)+pow(initialSideLength/4*math.sqrt(3),2))
+initialRadius = math.sqrt(pow(initialSideLength/2, 2)+pow(initialSideLength/(4*math.sqrt(3)),2))
 temp = []
 
 #comment the line bellow to see smaller triangle
-temp = rotatingPoints.triangle(0, initialRadius, initialSideLength)
+temp = rotatingPoints.triangle(0, initialRadius, initialSideLength, 255)
 
-#dimentions for second triangle
-secondSideLength = initialSideLength/2
-secondApothem = secondSideLength/(2*math.sqrt(3))
-secondRadius = math.sqrt(pow(secondSideLength/2, 2)+pow(secondSideLength/4*math.sqrt(3),2))
-
-temp = []
-print(temp)
-#print(temp, VALUE)
-counter = 0
-
-
-
-temp = rotatingPoints.triangle(180, secondRadius, secondSideLength)
-for i in range(0, len(temp)-1,1):
-    if(not temp[i] == 0):
-        #print(i)
-        counter += 1
-print(counter)
-
-#shifts the temp triangle
-#temp = shift(399, 399+initialApothem+secondApothem, temp)
+#set VALUE to temp
 
 for i in range(0, len(temp),1):
     VALUE[i] = temp[i]
 
-#splice(temp)
-#for i in range(0, len(temp)):
+#dimentions for second triangle
+secondSideLength = initialSideLength/2
+secondApothem = secondSideLength/(2*math.sqrt(3))
+secondRadius = math.sqrt(pow(secondSideLength/2, 2)+pow(secondSideLength/(4*math.sqrt(3)),2))
 
+temp = []
+#print(temp, VALUE)
+counter = 0
 
+angle = [30,180,330]
+for i in range(0, len(angle), 1):
+
+    temp = rotatingPoints.triangle(angle[i], secondRadius, secondSideLength, 127)
+
+    #shifts the temp triangle
+    temp = shift(399+(initialApothem+secondApothem)*math.sin(angle[i]*math.pi/180), 399-(initialApothem+secondApothem)*math.cos(angle[i]*math.pi/180), temp)
+    #adds to shape
+    splice(temp)
 
 #places the VALUE array on the image
 img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
 for x in range(0, WIDTH-1, 1):
     for y in range(0, WIDTH, 1):
-        img.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))*255))
+        img.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))))
 
 #shows the image
 img.show()
