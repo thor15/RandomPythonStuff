@@ -4,12 +4,11 @@ import rotatingPoints
 from PIL import Image
 WIDTH = 800
 ARRAYLENG= WIDTH*WIDTH
-VALUE = [0]*(ARRAYLENG)
+VALUE = []
 
 def splice(array):
     for i in range(0, len(VALUE)):
-        if(VALUE[i] == 0 and not array[i] == 0):
-            VALUE[i] = array[i]
+        VALUE.append(array[i])
 
 #for later
 def shift(centerPointX, centerPointY, array):
@@ -26,7 +25,8 @@ def shift(centerPointX, centerPointY, array):
 initialSideLength = 200
 initialApothem = initialSideLength/(2*math.sqrt(3))
 initialHeight = initialSideLength*math.sqrt(3)/2
-initialRadius = math.sqrt(pow(initialSideLength/2, 2)+pow(initialSideLength/(4*math.sqrt(3)),2))
+twoThridOfHeight = 2/3*initialHeight
+initialRadius = math.sqrt(twoThridOfHeight**2)
 temp = []
 
 #comment the line bellow to see smaller triangle
@@ -35,7 +35,7 @@ temp = rotatingPoints.triangle(0, initialRadius, initialSideLength, 255)
 #set VALUE to temp
 
 for i in range(0, len(temp),1):
-    VALUE[i] = temp[i]
+    VALUE.append(temp[i])
 
 #dimentions for second triangle
 secondSideLength = initialSideLength/2
@@ -47,20 +47,21 @@ temp = []
 counter = 0
 
 angle = [30,180,330]
-for i in range(0, len(angle), 1):
+# for i in range(0, len(angle), 1):
 
-    temp = rotatingPoints.triangle(angle[i], secondRadius, secondSideLength, 127)
+#     temp = rotatingPoints.triangle(angle[i], secondRadius, secondSideLength, 127)
 
-    #shifts the temp triangle
-    temp = shift(399+(initialApothem+secondApothem)*math.sin(angle[i]*math.pi/180), 399-(initialApothem+secondApothem)*math.cos(angle[i]*math.pi/180), temp)
-    #adds to shape
-    splice(temp)
+#     #shifts the temp triangle
+#     temp = shift(399+(initialApothem+secondApothem)*math.sin(angle[i]*math.pi/180), 399-(initialApothem+secondApothem)*math.cos(angle[i]*math.pi/180), temp)
+#     #adds to shape
+#     splice(temp)
 
 #places the VALUE array on the image
 img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
-for x in range(0, WIDTH-1, 1):
-    for y in range(0, WIDTH, 1):
-        img.putpixel([x,y], (abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y])),abs(int(VALUE[x*WIDTH+y]))))
+for i in range(0, len(VALUE), 1):
+    x = VALUE[i]//1000
+    y = VALUE[i]%1000
+    img.putpixel([x,y], (abs(int(40)),abs(int(40)),abs(int(220))))
 
 #shows the image
 img.show()

@@ -15,7 +15,8 @@ COLOUR = 40
 def points(x, y):
     global ARRAYOFVAL
     global COLOUR
-    ARRAYOFVAL[(399+round(x))*WIDTH+399+round(y)] = COLOUR
+    coordinateVal = 1000*(x+399)+y+399
+    ARRAYOFVAL.append(coordinateVal)
     
 
 
@@ -89,7 +90,6 @@ def triangle(angle, radius, sideLength, color):
     SIDE2X = []
     SIDE2Y = []
     ARRAYOFVAL.clear()
-    ARRAYOFVAL[ARRAYLENG:] = [0]*ARRAYLENG
     #print(VALUE)
     calculatePoints(angle, radius, sideLength)
     for point in range(0, len(SIDE1X)-1, 1):
