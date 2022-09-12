@@ -1,13 +1,15 @@
-from glob import glob
+import numpy as np
 from math import *
 from PIL import Image
 WIDTH = 800
 ARRAYLENG= WIDTH*WIDTH
 SIDE1X = []
-SIDE1Y = []
+SIDE1X = []
 SIDE2X = []
 SIDE2Y = []
-ARRAYOFVAL = [0]*ARRAYLENG
+SIDE3X = []
+YVALUES = {}
+ARRAYOFVAL = []
 VALUE = [0]*ARRAYLENG
 IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
 COLOUR = 40
@@ -15,8 +17,7 @@ COLOUR = 40
 def points(x, y):
     global ARRAYOFVAL
     global COLOUR
-    coordinateVal = 1000*(x+399)+y+399
-    ARRAYOFVAL.append(coordinateVal)
+    ARRAYOFVAL.append((x+399,y+399))
     
 
 
@@ -24,30 +25,36 @@ def lerp(low, high, t):
     return low*(1-t)+high*t
 
 
-def drawSideHorizantal(ax, ay, bx, by):
-    distance = sqrt(pow(bx-ax, 2)+pow(by-ay,2))
-    for i in range(0, int(distance), 1):
-        x = lerp(ax, bx, i/distance)
-        y = lerp(ay, by, i/distance)
-        points(round(x), round(y))
+
+def drawHorizontal(ax,ay,bx):
+    aInt = int(ax)
+    #print(bx-ax)
+    for i in range(0, int(bx-ax), 1):
+        x = aInt+i
+        points(round(x), round(ay))
 
 
-def drawSideVertical(ax, ay, bx, by, n):
+def drawNotBase(ax, ay, bx, by):
     global SIDE1X
-    global SIDE1Y
     global SIDE2X
-    global SIDE2Y
+    global SIDE3X
+    global YVALUES
     distance = sqrt(pow(bx-ax, 2)+pow(by-ay,2))
     for i in range(0, int(distance), 1):
-        x = lerp(ax, bx, i/distance)
-        y = lerp(ay, by, i/distance)
-        points(round(x), round(y))
-        if(n == 0):
-            SIDE1X.append(x)
-            SIDE1Y.append(y)
+        x = round(lerp(ax, bx, i/distance))
+        y = round(lerp(ay, by, i/distance))
+        points(x, y)
+        inDict = False
+        for i in YVALUES.keys():
+            if(y == i):
+                inDict = True
+                break
+        if(not inDict):
+            YVALUES.update({y:x})
         else:
-            SIDE2X.append(x)
-            SIDE2Y.append(y)
+            #print("Draw", x, YVALUES[y])
+            drawHorizontal(YVALUES[y], y, x)
+
     
 
 #starting points a:(-100, 50sqrt(3)), b: (100, 50sqrt(3)), c: (0,-50sqrt(3))
@@ -69,9 +76,9 @@ def calculatePoints(angle, radius, sideLength):
     cy = -1*radius*cos(rAngle)
 
     #draw side
-    drawSideHorizantal(ax, ay, bx, by)
-    drawSideVertical(ax, ay, cx, cy, 0)
-    drawSideVertical(bx, by, cx, cy, 1)
+    drawNotBase(ax, ay, bx, by)
+    drawNotBase(ax, ay, cx, cy)
+    drawNotBase(bx, by, cx, cy)
 
 
 
@@ -82,8 +89,9 @@ def triangle(angle, radius, sideLength, color):
     global SIDE1X
     global SIDE1Y
     global SIDE2X
-    global SIDE2Y
+    global SIDE1Y
     global COLOUR
+    global YVALUES
     COLOUR = color
     SIDE1X = []
     SIDE1Y = []
@@ -92,7 +100,8 @@ def triangle(angle, radius, sideLength, color):
     ARRAYOFVAL.clear()
     #print(VALUE)
     calculatePoints(angle, radius, sideLength)
-    for point in range(0, len(SIDE1X)-1, 1):
-        #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
-        drawSideHorizantal(SIDE1X[point], SIDE1Y[point], SIDE2X[point], SIDE2Y[point])
+    # print(YVALUES)
+    # for point in range(0, len(SIDE1X)-1, 1):
+    #     #print("A:", "(" +str(SIDE1X[point]) + ","+ str(SIDE1Y[point]) +")", "   B:", "(" +str(SIDE2X[point]) + ","+ str(SIDE2Y[point]) +")")
+    #     drawHorizontal(SIDE1X[point], SIDE1Y[point], SIDE2X[point])
     return ARRAYOFVAL
