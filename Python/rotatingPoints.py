@@ -2,21 +2,11 @@ import numpy as np
 from math import *
 from PIL import Image
 WIDTH = 800
-ARRAYLENG= WIDTH*WIDTH
-SIDE1X = []
-SIDE1X = []
-SIDE2X = []
-SIDE2Y = []
-SIDE3X = []
 YVALUES = {}
 ARRAYOFVAL = []
-VALUE = [0]*ARRAYLENG
-IMG = Image.new(mode="RGB", size=(WIDTH, WIDTH))
-COLOUR = 40
 
 def points(x, y):
     global ARRAYOFVAL
-    global COLOUR
     ARRAYOFVAL.append((x+399,y+399))
     
 
@@ -28,16 +18,12 @@ def lerp(low, high, t):
 
 def drawHorizontal(ax,ay,bx):
     aInt = int(ax)
-    #print(bx-ax)
     for i in range(0, int(bx-ax), 1):
         x = aInt+i
         points(round(x), round(ay))
 
 
 def drawNotBase(ax, ay, bx, by):
-    global SIDE1X
-    global SIDE2X
-    global SIDE3X
     global YVALUES
     distance = sqrt(pow(bx-ax, 2)+pow(by-ay,2))
     for i in range(0, int(distance), 1):
@@ -52,8 +38,10 @@ def drawNotBase(ax, ay, bx, by):
         if(not inDict):
             YVALUES.update({y:x})
         else:
-            #print("Draw", x, YVALUES[y])
-            drawHorizontal(YVALUES[y], y, x)
+            if(YVALUES[y]-x > 0):
+                drawHorizontal(x, y, YVALUES[y])
+            else:
+                drawHorizontal(YVALUES[y], y, x)
 
     
 
@@ -76,6 +64,9 @@ def calculatePoints(angle, radius, sideLength):
     cy = -1*radius*cos(rAngle)
 
     #draw side
+    points(round(ax), round(ay))
+    points(round(bx), round(by))
+    points(round(cx), round(cy))
     drawNotBase(ax, ay, bx, by)
     drawNotBase(ax, ay, cx, cy)
     drawNotBase(bx, by, cx, cy)
@@ -83,20 +74,9 @@ def calculatePoints(angle, radius, sideLength):
 
 
 
-def triangle(angle, radius, sideLength, color):
-    global ARRAYOFVAL
-    global IMG
-    global SIDE1X
-    global SIDE1Y
-    global SIDE2X
-    global SIDE1Y
-    global COLOUR
+def triangle(angle, radius, sideLength):
     global YVALUES
-    COLOUR = color
-    SIDE1X = []
-    SIDE1Y = []
-    SIDE2X = []
-    SIDE2Y = []
+    YVALUES = {}
     ARRAYOFVAL.clear()
     #print(VALUE)
     calculatePoints(angle, radius, sideLength)
