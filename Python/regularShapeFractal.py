@@ -9,7 +9,7 @@ def splice(array):
     for i in range(0, len(array)):
         VALUE.append(array[i])
 
-
+# takes an array that has 
 def shift(centerPointX, centerPointY, array):
     changedIndices = []
     for index in range(len(array)-1, -1, -1):
@@ -43,6 +43,7 @@ temp = []
 counter = 0
 firstCenter = initialApothem+secondApothem
 angle = [60, 300, 180]
+# creates, shifts, and splices the triangles that have half of the side length
 for i in range(0, len(angle), 1):
 
     temp = rotatingPoints.triangle(angle[i], secondRadius, secondSideLength)
@@ -63,6 +64,7 @@ thridHeight = thirdSideLength*math.sqrt(3)/2
 twoThridOfHeight = 2/3*thridHeight
 thirdRadius = math.sqrt(twoThridOfHeight**2)
 
+# creates the triangles with 1/4 the side length of the original triangle then shift them and splice them witht the image
 for i in range(0, 3, 1):
     angle2[0] = angle[i] + 60
     angle2[1] = angle[i] - 60

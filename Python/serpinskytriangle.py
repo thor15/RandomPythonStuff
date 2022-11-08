@@ -1,64 +1,55 @@
 import math
 from PIL import Image
+import rotatingPoints
 WIDTH = 800
 ARRAYLENG= WIDTH*WIDTH
-VALUES = [0]*(ARRAYLENG)
+VALUES = []
 
-def triangle(centerPointX, centerPointY, sideLength, angle):
+def splice(array):
+    global VALUES
+    for i in range(0, len(array)):
+        VALUES.append(array[i])
 
-
-    rAngle = angle*math.pi/180
-    x = sideLength/2
-    apothem = x/math.sqrt(3)
-
-    height = x*math.sqrt(3)
-    
-    c = sideLength
-    deltaC = (sideLength-1)/height
-    count = 0
-    
-    test = []
-
-    sinVal = math.sin(rAngle)
-    cosVal = math.cos(rAngle)
-
-    #sinInv = 1/sin
-    #cosInv = 1/cos
-
-    # print(sin, cos)
-    # print(height, c)
-
-    for i in range(int(-math.ceil(height)/2), int(math.ceil(height)/2), 1):
-        for j in range(int(int(-c)/2), int(int(c)/2), 1):
-            value = (centerPointY+round(i*sinVal+j*cosVal))*WIDTH+(centerPointY+round(i*cosVal+j*sinVal))
-            # if(len(test) == 0):
-            #     print(value)
-            # if(value in test):
-            #     print(i, j, value, test.index(value))
-            if(not (value in test)):
-                test.append(value)
-            VALUES[int(value)] = int(c/8)
-            count += 1
-        c = c-deltaC
-    #print(value)
-    print("Total Calls:", count, "Unique values: ", len(test))
+# takes an array that has 
+def shift(centerPointX, centerPointY, array):
+    changedIndices = []
+    for index in range(len(array)-1, -1, -1):
+        array[index] = (math.floor(array[index][0] + centerPointX), round(array[index][1] + centerPointY))
+    return array
     
 
-# def repeat(sideLength, count):
-#     apothemOld = sideLength/sqrt(12)
-#     apothemNew = sideLength/sqrt(48)
+temp = []
+initialSideLength = 400
+initialApothem = initialSideLength/(2*math.sqrt(3))
+initialHeight = initialSideLength*math.sqrt(3)/2
+twoThridOfHeight = 2/3*initialHeight
+initialRadius = math.sqrt(twoThridOfHeight**2)
 
-#     triangle(400,400,sideLength, 45)
-#     triangle()
-    
-VALUES = [0]*(ARRAYLENG)
-triangle(WIDTH/2, WIDTH/2, WIDTH/2, 0)
+# first triangle
+# temp = rotatingPoints.triangle(180, initialRadius, initialSideLength)
+# splice(temp)
+
+previousCenter = initialApothem
+angle = [0, 60, 300]
+for i in range(1, 2, 1):
+    sideLength = initialSideLength/(2*i)
+    apothem = sideLength/(2*math.sqrt(3))
+    height = sideLength*math.sqrt(3)/2
+    twoThridOfHeight = 2/3*height
+    radius = math.sqrt(twoThridOfHeight**2)
+    temp = rotatingPoints.triangle(180, radius, sideLength)
+    for j in range(0,3,1):
+        print((initialApothem + apothem)*math.sin(angle[j]*math.pi/180), -1*(initialApothem + apothem)*math.cos(angle[j]*math.pi/180))
+        temp = shift((initialApothem + apothem)*math.sin(angle[j]*math.pi/180), -1*(initialApothem + apothem)*math.cos(angle[j]*math.pi/180), temp)
+        splice(temp)
+    #previousCenter += apothem*2
+
+
 
 img = Image.new(mode="RGB", size=(WIDTH, WIDTH))
 
-for x in range(0, WIDTH-1, 1):
-    for y in range(0, WIDTH, 1):
-        img.putpixel([x,y], (abs(int(VALUES[x*WIDTH+y])),abs(int(VALUES[x*WIDTH+y])),abs(int(VALUES[x*WIDTH+y]))*255))
+for i in range(len(VALUES)):
+    img.putpixel(VALUES[i], (255,255,255))
 
 
 img.show()

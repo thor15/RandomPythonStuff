@@ -8,7 +8,7 @@ VALUEY = []
 VALUEZ = []
 SCALEA = 300
 SCALEB = 300
-cConstant = complex(0.4,0.21)
+cConstant = complex(0.62,0.24)
 
 
 poly = [1,0,2,0,1]

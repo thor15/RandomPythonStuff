@@ -1,6 +1,4 @@
-from asyncore import read
 from cmath import sqrt
-from math import floor
 from PIL import Image
 WIDTH = 800
 
